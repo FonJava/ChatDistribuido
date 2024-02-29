@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Distribuído</title>
+</head>
+<body>
+    <h1>Bem-vindo ao Chat Distribuído</h1>
+
+    <form action="/create_room" method="post">
+        <label for="room_name">Nome da Sala:</label>
+        <input type="text" id="room_name" name="room_name" required>
+        <button type="submit">Criar Sala</button>
+    </form>
+
+    <h2>Salas Disponíveis</h2>
+    <ul id="room_list"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('update_rooms', function(data) {
+            var roomList = document.getElementById('room_list');
+            roomList.innerHTML = "";
+            data.rooms.forEach(function(room) {
+                var listItem = document.createElement('li');
+                listItem.textContent = room;
+                roomList.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>

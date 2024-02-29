@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala</title>
+</head>
+<body>
+    <h2>Sala: {{ room_name }}</h2>
+    <div id="chat"></div>
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Digite sua mensagem">
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            socket.on('message', function (data) {
+                var chatDiv = document.getElementById('chat');
+                chatDiv.innerHTML += '<p>' + data + '</p>';
+            });
+
+            document.getElementById('message-form').onsubmit = function (e) {
+                e.preventDefault();
+                var input = document.getElementById('message-input');
+                var room = '{{ room_name }}';
+                socket.emit('message', { username: '{{ username }}', message: input.value, room: room });
+                input.value = '';
+            };
+        });
+    </script>
+</body>
+</html>

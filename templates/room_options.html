@@ -1,0 +1,47 @@
+<!-- room_options.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opções da Sala</title>
+</head>
+<body>
+    <h2>Opções da Sala</h2>
+    <p>Olá, {{ username }}!</p>
+    <a href="/logout">Logout</a>
+
+    <h3>Escolha uma opção:</h3>
+    <form method="post" action="/room_options">
+        <label for="room_name">Nome da Sala:</label>
+        <input type="text" id="room_name" name="room_name" required>
+        <button type="submit" name="create_room">Criar Sala</button>
+        <button type="submit" name="join_room">Entrar em Sala Existente</button>
+    </form>
+
+    <h3>Salas Disponíveis:</h3>
+    <ul id="room_list"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            socket.on('update_rooms', function(data) {
+                updateRoomList(data.rooms);
+            });
+
+            function updateRoomList(rooms) {
+                var roomList = document.getElementById('room_list');
+                roomList.innerHTML = '';
+                rooms.forEach(function(room) {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = room;
+                    roomList.appendChild(listItem);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
